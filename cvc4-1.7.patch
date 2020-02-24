@@ -1,0 +1,171 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7c700ab07..d8ce20ff7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -31,17 +31,6 @@ set(CMAKE_CXX_STANDARD 11)
+ # plugins.
+ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+ 
+-# Embed the installation prefix as an RPATH in the executable such that the
+-# linker can find our libraries (such as libcvc4parser) when executing the cvc4
+-# binary. This is for example useful when installing CVC4 with a custom prefix
+-# on macOS (e.g. when using homebrew in a non-standard directory). If we do not
+-# set this option, then the linker will not be able to find the required
+-# libraries when trying to run CVC4.
+-#
+-# More information on RPATH in CMake:
+-# https://gitlab.kitware.com/cmake/community/wikis/doc/cmake/RPATH-handling
+-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+-
+ #-----------------------------------------------------------------------------#
+ 
+ include(Helpers)
+@@ -390,7 +379,7 @@ endif()
+ 
+ if(USE_CLN)
+   set(GPL_LIBS "${GPL_LIBS} cln")
+-  find_package(CLN 1.2.2 REQUIRED)
++  find_package(CLN 1.3.6 REQUIRED)
+   set(CVC4_USE_CLN_IMP 1)
+   set(CVC4_USE_GMP_IMP 0)
+ else()
+diff --git a/cmake/FindCLN.cmake b/cmake/FindCLN.cmake
+index 7b2e6f0f4..8ff7a84ec 100644
+--- a/cmake/FindCLN.cmake
++++ b/cmake/FindCLN.cmake
+@@ -3,9 +3,18 @@
+ # CLN_INCLUDE_DIR - the CLN include directory
+ # CLN_LIBRARIES - Libraries needed to use CLN
+ 
+-find_path(CLN_INCLUDE_DIR NAMES cln/cln.h)
+-find_library(CLN_LIBRARIES NAMES cln)
++if(NOT CLN_HOME)
++  set(CLN_HOME ${PROJECT_SOURCE_DIR}/cln-1.3.6)
++endif()
+ 
++find_path(CLN_INCLUDE_DIR
++          NAMES cln/cln.h
++          PATHS ${CLN_HOME}/include
++          NO_DEFAULT_PATH)
++find_library(CLN_LIBRARIES
++             NAMES cln
++             PATHS ${CLN_HOME}/lib
++             NO_DEFAULT_PATH)
+ 
+ if(CLN_INCLUDE_DIR)
+   file(STRINGS
+diff --git a/cmake/FindGMP.cmake b/cmake/FindGMP.cmake
+index 8125a583b..9f955273d 100644
+--- a/cmake/FindGMP.cmake
++++ b/cmake/FindGMP.cmake
+@@ -9,7 +9,6 @@
+ # fail if GMP was not found in the specified directory.
+ if(NOT GMP_HOME)
+   set(GMP_HOME ${PROJECT_SOURCE_DIR}/gmp-6.1.2)
+-  set(CHECK_SYSTEM_VERSION TRUE)
+ endif()
+ 
+ find_path(GMP_INCLUDE_DIR
+@@ -21,11 +20,6 @@ find_library(GMP_LIBRARIES
+              PATHS ${GMP_HOME}/lib
+              NO_DEFAULT_PATH)
+ 
+-if(CHECK_SYSTEM_VERSION)
+-  find_path(GMP_INCLUDE_DIR NAMES gmp.h gmpxx.h)
+-  find_library(GMP_LIBRARIES NAMES gmp)
+-endif()
+-
+ include(FindPackageHandleStandardArgs)
+ find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
+ 
+diff --git a/contrib/get-cln b/contrib/get-cln
+new file mode 100755
+index 000000000..ddd4d46d6
+--- /dev/null
++++ b/contrib/get-cln
+@@ -0,0 +1,26 @@
++#!/bin/bash
++
++source "$(dirname "$0")/get-script-header.sh"
++
++[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --with-pic"
++[ -n "$HOST" ] && HOST="--host=$HOST"
++[ -z "$CLNVERSION" ] && CLNVERSION=1.3.6
++
++echo =============================================================================
++echo
++echo "Setting up CLN $CLNVERSION..."
++echo
++( set -ex
++  gmpprefix="$(pwd)/gmp-1.2"
++  mkdir cln-$CLNVERSION
++  cd cln-$CLNVERSION
++  clnprefix=`pwd` &&
++  mkdir src &&
++  cd src &&
++  webget https://www.ginac.de/CLN/cln-$CLNVERSION.tar.bz2 cln-$CLNVERSION.tar.bz2 &&
++  tar xfj cln-$CLNVERSION.tar.bz2 &&
++  cd cln-$CLNVERSION &&
++  ./configure ${HOST} --prefix="$clnprefix" --with-gmp="${gmpprefix}" ${BUILD_TYPE} &&
++  make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}" &&
++  make install
++) || exit 1
+diff --git a/contrib/get-gmp b/contrib/get-gmp
+index 02602e456..6545ec4e8 100755
+--- a/contrib/get-gmp
++++ b/contrib/get-gmp
+@@ -11,7 +11,7 @@
+ 
+ source "$(dirname "$0")/get-script-header.sh"
+ 
+-[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static"
++[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --with-pic"
+ [ -n "$HOST" ] && HOST="--host=$HOST"
+ [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
+ 
+diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
+index 3423a3e1b..0acae2147 100644
+--- a/src/bindings/java/CMakeLists.txt
++++ b/src/bindings/java/CMakeLists.txt
+@@ -14,6 +14,7 @@ else()
+   swig_add_library(cvc4jni LANGUAGE Java SOURCES ${CVC4_SWIG_INTERFACE})
+ endif()
+ swig_link_libraries(cvc4jni cvc4 cvc4parser ${JNI_LIBRARIRES})
++install(TARGETS cvc4jni DESTINATION lib)
+ 
+ # Create CVC4.jar from all generated *.java files.
+ set(gen_java_files
+@@ -174,10 +175,7 @@ set(gen_java_files
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_ListenerCollection__Registration.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_MaybeT_CVC4__Rational_t.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_Type.java
+-  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpq_class.java
+-  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpz_class.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__istream.java
+-  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_t.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__ostream.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__shared_ptrT_CVC4__SygusPrintCallback_t.java
+   ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__string.java
+@@ -241,5 +239,22 @@ set(gen_java_files
+   ${CMAKE_CURRENT_BINARY_DIR}/vectorVectorExpr.java
+ )
+ 
++if(CVC4_USE_CLN_IMP)
++  list(APPEND gen_java_files
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_cln__cl_I.java
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_cln__cl_RA.java
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_std__lessT_CVC4__Expr_t_t.java
++  )
++elseif(CVC4_USE_GMP_IMP)
++  list(APPEND gen_java_files
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpq_class.java
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpz_class.java
++    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_t.java
++  )
++endif()
++
++install(FILES ${gen_java_files} DESTINATION src/cvc4/java)
+ add_jar(cvc4jar SOURCES ${gen_java_files} OUTPUT_NAME CVC4)
++install_jar(cvc4jar DESTINATION share/cvc4)
+ add_dependencies(cvc4jar cvc4jni)
++
