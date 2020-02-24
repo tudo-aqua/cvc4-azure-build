@@ -35,7 +35,7 @@ stages:
 
       - job: Windows
         pool:
-          vmImage: ubuntu-latest
+          vmImage: windows-latest
         steps:
           - bash: cinst swig
           - bash: build.sh
