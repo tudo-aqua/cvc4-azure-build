@@ -21,7 +21,7 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - bash: apt-get install -y swig
+          - bash: sudo apt-get install -y swig
           - bash: build.sh
           - publish: 'build'
 
