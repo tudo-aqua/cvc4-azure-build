@@ -21,21 +21,26 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - bash: sudo apt-get install -y swig
-          - bash: ./build.sh
+          - bash: |
+              sudo apt-get install -y swig
+              ./build.sh
           - publish: 'build'
 
       - job: OSX
         pool:
           vmImage: macOS-latest
         steps:
-          - bash: ./build.sh
+          - bash: |
+              brew install realpath
+              export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+              ./build.sh
           - publish: 'build'
 
       - job: Windows
         pool:
           vmImage: windows-latest
         steps:
-          - bash: cinst swig
-          - bash: ./build.sh
+          - bash: |
+              cinst swig
+              ./build.sh
           - publish: 'build'
