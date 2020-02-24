@@ -20,7 +20,7 @@ prefix="$(pwd)/build"
 patch="$(pwd)/cvc4-${CVC4_VERSION}.patch"
 
 git clone https://github.com/CVC4/CVC4.git --branch ${CVC4_VERSION} src
-pushd CVC4
+pushd src
 
 git apply "${patch}"
 
