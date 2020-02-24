@@ -22,15 +22,14 @@ stages:
           vmImage: ubuntu-latest
         steps:
           - bash: sudo apt-get install -y swig
-          - bash: build.sh
+          - bash: ./build.sh
           - publish: 'build'
 
       - job: OSX
         pool:
           vmImage: macOS-latest
         steps:
-          - bash: brew install boost swig
-          - bash: build.sh
+          - bash: ./build.sh
           - publish: 'build'
 
       - job: Windows
@@ -38,5 +37,5 @@ stages:
           vmImage: windows-latest
         steps:
           - bash: cinst swig
-          - bash: build.sh
+          - bash: ./build.sh
           - publish: 'build'
