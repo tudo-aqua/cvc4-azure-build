@@ -11,5 +11,5 @@ The build wrapper logic resides in `build.sh`, while necessary patches to the CV
 
 #### License
 
-CVC4 is licensed under the various licenses. The support files in this project are licensed under the
+CVC4 is licensed under various licenses. The support files in this project are licensed under the
 [ISC License](https://opensource.org/licenses/ISC).
