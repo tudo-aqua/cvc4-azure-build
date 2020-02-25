@@ -31,7 +31,7 @@ stages:
           vmImage: macOS-latest
         steps:
           - bash: |
-              brew install realpath
+              brew install coreutils
               export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
               ./build.sh
           - publish: 'build'
