@@ -23,8 +23,6 @@ stages:
         steps:
           - bash: |
               sudo apt-get install -y swig
-              export PATH="$(sed 's/Program Files (x86)/PROGRA~2/g;s/Program Files/PROGRA~1/g' <<< ${PATH})"
-              export SHELL="$(sed 's/Program Files (x86)/PROGRA~2/g;s/Program Files/PROGRA~1/g' <<< ${SHELL})"
               ./build.sh
           - publish: 'build'
 
@@ -44,5 +42,7 @@ stages:
         steps:
           - bash: |
               cinst swig
+              export PATH="$(sed 's/Program Files (x86)/PROGRA~2/g;s/Program Files/PROGRA~1/g' <<< ${PATH})"
+              export SHELL="$(sed 's/Program Files (x86)/PROGRA~2/g;s/Program Files/PROGRA~1/g' <<< ${SHELL})"
               ./build.sh
           - publish: 'build'
