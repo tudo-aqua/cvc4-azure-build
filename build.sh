@@ -28,9 +28,8 @@ for dependency in antlr-3.4 gmp abc cadical cln cryptominisat drat2er glpk-cut-l
   contrib/get-$dependency
 done
 
-./configure.sh --gpl \
-  --abc --cadical --cln --cryptominisat --drat2er --lfsc --glpk --symfpu \
-  --language-bindings=java --prefix="${prefix}"
+./configure.sh --gpl --abc --cadical --cln --cryptominisat --drat2er --lfsc --glpk --symfpu --language-bindings=java \
+  --prefix="${prefix}"
 pushd build
 make -j "$(nproc)" install
 popd
