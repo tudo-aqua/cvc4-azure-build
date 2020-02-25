@@ -23,6 +23,7 @@ stages:
         steps:
           - bash: |
               sudo apt-get install -y swig
+              export PATH="$(sed 's/Program Files (x86)/PROGRA~2/g;s/Program Files/PROGRA~1/g' <<< ${PATH})"
               ./build.sh
           - publish: 'build'
 
