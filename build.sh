@@ -24,7 +24,7 @@ pushd src
 
 git apply "${patch}"
 
-for dependency in antlr-3.4 gmp abc cadical cln cryptominisat drat2er glpk-cut-log lfsc symfpu; do
+for dependency in antlr-3.4 gmp abc cadical cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
   contrib/get-$dependency
 done
 
