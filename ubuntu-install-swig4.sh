@@ -20,7 +20,7 @@ else
   mkdir swig
   pushd swig
   wget \
-    "${UBTUNTU_MIRROR}/pool/universe/s/swig/swig_${SWIG_VERSION}-${SWIG_BUILD}.dsc" \
+    "${UBUNTU_MIRROR}/pool/universe/s/swig/swig_${SWIG_VERSION}-${SWIG_BUILD}.dsc" \
     "${UBUNTU_MIRROR}/pool/universe/s/swig/swig_${SWIG_VERSION}.orig.tar.gz" \
     "${UBUNTU_MIRROR}/pool/universe/s/swig/swig_${SWIG_VERSION}-${SWIG_BUILD}.debian.tar.xz"
   sudo apt-get install -y bison debhelper dh-autoreconf dpkg-dev fakeroot libpcre3-dev
