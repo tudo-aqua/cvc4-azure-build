@@ -48,8 +48,7 @@ stages:
         pool:
           vmImage: windows-latest
         steps:
-          - bash: |
-              cinst --no-progress swig
-              export SHELL="/${SHELL}"
-              ./build.sh
+          - script: cinst --no-progress msys2 --params "/InstallDir=C:\msys64"
+          - script: C:\msys64\usr\bin\bash --login -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gcc mingw-w64-x86_64-swig"
+          - script: C:\msys64\usr\bin\bash --login -c "./build.sh"
           - publish: 'build'
