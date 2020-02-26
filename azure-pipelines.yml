@@ -29,9 +29,9 @@ stages:
               ./ubuntu-install-swig4.sh
               ./build.sh
             env:
-              - UBUNTU_MIRROR: $(UbuntuMirror)
-              - SWIG_VERSION: $(SwigVersion)
-              - SWIG_BUILD: $(SwigBuild)
+              UBUNTU_MIRROR: $(UbuntuMirror)
+              SWIG_VERSION: $(SwigVersion)
+              SWIG_BUILD: $(SwigBuild)
           - publish: 'build'
 
       - job: OSX
