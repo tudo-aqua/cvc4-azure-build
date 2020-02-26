@@ -51,6 +51,6 @@ stages:
           - bash: |
               cinst --no-progress msys2 --params "/InstallDir=C:/msys64"
               cinst --no-progress swig
-              C:\msys64\usr\bin\pacman -S cmake autoconf automake gcc make
-              C:\msys64\usr\bin\bash ./build.sh
+              C:\\msys64\\usr\\bin\\pacman -S cmake autoconf automake gcc make
+              C:\\msys64\\usr\\bin\\bash ./build.sh
           - publish: 'build'
