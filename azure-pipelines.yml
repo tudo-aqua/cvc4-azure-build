@@ -49,8 +49,8 @@ stages:
           vmImage: windows-latest
         steps:
           - bash: |
-              cinst msys2 --params "/InstallDir=C:/msys64"
-              cinst swig
+              cinst --no-progress msys2 --params "/InstallDir=C:/msys64"
+              cinst --no-progress swig
               C:\msys64\usr\bin\pacman -S cmake autoconf automake gcc make
               C:\msys64\usr\bin\bash ./build.sh
           - publish: 'build'
