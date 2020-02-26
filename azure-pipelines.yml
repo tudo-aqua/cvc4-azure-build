@@ -50,5 +50,6 @@ stages:
         steps:
           - bash: |
               cinst swig
+              pacman -S make
               ./build.sh
           - publish: 'build'
