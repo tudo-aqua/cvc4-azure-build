@@ -14,6 +14,9 @@
 
 set -euxo pipefail
 
+echo "PATH=$PATH"
+echo "SHELL=$SHELL"
+
 CVC4_VERSION=1.7
 
 prefix="$(pwd)/build"
