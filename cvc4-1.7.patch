@@ -78,6 +78,32 @@ index 8125a583b..9f955273d 100644
  include(FindPackageHandleStandardArgs)
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
+diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
+index 670fc3b41..ca22b6a42 100755
+--- a/contrib/get-antlr-3.4
++++ b/contrib/get-antlr-3.4
+@@ -60,8 +60,8 @@ fi
+ 
+ cp Makefile Makefile.orig
+ sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
+-make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
+-make install
++MSYS2_ARG_CONV_EXCL="*" make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
++MSYS2_ARG_CONV_EXCL="*" make install
+ 
+ if [[ $WINDOWS_BUILD == "yes" ]]; then
+   exit 0
+@@ -83,8 +83,8 @@ fi
+ 
+ cp Makefile Makefile.orig
+ sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
+-make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
+-make install
++MSYS2_ARG_CONV_EXCL="*" make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
++MSYS2_ARG_CONV_EXCL="*" make install
+ cd ../..
+ mv lib/libantlr3c.la lib/libantlr3c.la.orig
+ awk '/^old_library=/ {print "old_library='\''libantlr3c-static.a'\''"} /^library_names=/ {print "library_names='\''libantlr3c.a'\''"} !/^old_library=/ && !/^library_names=/ {print}' < lib/libantlr3c.la.orig > lib/libantlr3c.la
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
 index 000000000..ddd4d46d6

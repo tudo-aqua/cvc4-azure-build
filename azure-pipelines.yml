@@ -50,6 +50,5 @@ stages:
         steps:
           - bash: |
               cinst swig
-              export MSYS2_ARG_CONV_EXCL="*"
               ./build.sh
           - publish: 'build'
