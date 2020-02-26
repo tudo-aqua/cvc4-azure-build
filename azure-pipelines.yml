@@ -51,5 +51,5 @@ stages:
           - pwsh: cinst --no-progress msys2 --params "/InstallDir=C:\\msys64"
           - pwsh: |
               C:\\msys64\\usr\\bin\\bash -c "pacman -S --noconfirm autoconf automake cmake gcc git make swig"
-              C:\\msys64\\usr\\bin\\bash ./build.sh
+              C:\\msys64\\usr\\bin\\bash -c "./build.sh"
           - publish: 'build'
