@@ -39,7 +39,7 @@ stages:
           vmImage: macOS-latest
         steps:
           - bash: |
-              brew install coreutils
+              brew install coreutils libtool
               export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
               ./build.sh
           - publish: 'build'

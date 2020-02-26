@@ -133,6 +133,19 @@ index e465ab3d4..9f672730a 100755
  mkdir build
  
  cd build
+diff --git a/contrib/get-glpk-cut-log b/contrib/get-glpk-cut-log
+index dcd5aac00..0d8d3721b 100755
+--- a/contrib/get-glpk-cut-log
++++ b/contrib/get-glpk-cut-log
+@@ -15,7 +15,7 @@ webget https://github.com/timothy-king/glpk-cut-log/archive/$commit.zip glpk-cut
+ unzip glpk-cut-log-$commit.zip
+ cd glpk-cut-log-$commit
+ 
+-libtoolize
++if command -v libtoolize; then libtoolize; else glibtoolize; fi
+ aclocal
+ autoheader
+ autoconf
 diff --git a/contrib/get-gmp b/contrib/get-gmp
 index 02602e456..6545ec4e8 100755
 --- a/contrib/get-gmp
