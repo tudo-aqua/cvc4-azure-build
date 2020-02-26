@@ -49,7 +49,7 @@ stages:
           vmImage: windows-latest
         steps:
           - bash: |
-            cinst --no-progress swig
-            export SHELL="/${SHELL}"
-            ./build.sh
+              cinst --no-progress swig
+              export SHELL="/${SHELL}"
+              ./build.sh
           - publish: 'build'
