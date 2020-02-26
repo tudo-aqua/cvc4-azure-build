@@ -18,12 +18,20 @@ stages:
     displayName: 'Run Build Script on all Platforms'
     jobs:
       - job: Linux
+        variables:
+          UbuntuMirror: 'https://mirrors.ocf.berkeley.edu/ubuntu'
+          SwigVersion: '4.0.1'
+          SwigBuild: '5'
         pool:
           vmImage: ubuntu-latest
         steps:
           - bash: |
-              sudo apt-get install -y swig
+              ./ubuntu-install-swig4.sh
               ./build.sh
+            env:
+              - UBUNTU_MIRROR: $(UbuntuMirror)
+              - SWIG_VERSION: $(SwigVersion)
+              - SWIG_BUILD: $(SwigBuild)
           - publish: 'build'
 
       - job: OSX
