@@ -78,6 +78,25 @@ index 8125a583b..9f955273d 100644
  include(FindPackageHandleStandardArgs)
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
+diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
+index 670fc3b41..285926747 100755
+--- a/contrib/get-antlr-3.4
++++ b/contrib/get-antlr-3.4
+@@ -81,6 +81,14 @@ else
+   ./configure --with-pic --disable-antlrdebug --prefix="${PREFIX}" $ANTLR_CONFIGURE_ARGS $BUILD_TYPE
+ fi
+ 
++echo
++echo '========== ANTLR MAKEFILE =========='
++echo
++cat Makefile
++echo
++echo '========== ANTLR MAKEFILE =========='
++echo
++
+ cp Makefile Makefile.orig
+ sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
+ make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
 index 000000000..ddd4d46d6
