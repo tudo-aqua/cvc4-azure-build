@@ -17,6 +17,7 @@ set -euxo pipefail
 if apt-cache show swig4.0; then
   sudo apt-get install -y swig4.0
 else
+  mkdir swig
   pushd swig
   wget \
     "${UBTUNTU_MIRROR}/pool/universe/s/swig/swig_${SWIG_VERSION}-${SWIG_BUILD}.dsc" \
