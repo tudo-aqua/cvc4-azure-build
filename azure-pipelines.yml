@@ -48,10 +48,8 @@ stages:
         pool:
           vmImage: windows-latest
         steps:
+          - pwsh: cinst --no-progress msys2 --params "/InstallDir=C:\\msys64"
           - pwsh: |
-              cinst --no-progress msys2 --params "/InstallDir=C:\\msys64"
-              refreshenv
-              C:\\msys64\\usr\\bin\\bash -c 'sed "s/:/\n/g" <<< "$PATH"'
               C:\\msys64\\usr\\bin\\bash -c "pacman -S --noconfirm autoconf automake cmake gcc git make swig"
               C:\\msys64\\usr\\bin\\bash ./build.sh
           - publish: 'build'
