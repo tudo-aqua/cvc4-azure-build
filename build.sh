@@ -14,10 +14,10 @@
 
 set -euxo pipefail
 
-echo "PATH=$PATH"
-echo "SHELL=$SHELL"
-
 CVC4_VERSION=1.7
+
+prefix="$(pwd)/build"
+patch="$(pwd)/cvc4-${CVC4_VERSION}.patch"
 
 git clone https://github.com/CVC4/CVC4.git --branch ${CVC4_VERSION} src
 pushd src
