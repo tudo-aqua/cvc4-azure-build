@@ -53,7 +53,7 @@ stages:
           - script: cinst --no-progress msys2 --params "/InstallDir=C:\msys64"
           - script: >
               C:\msys64\usr\bin\bash --login -c
-              "pacman -S --noconfirm git mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-swig" &&
+              "pacman -S --noconfirm git mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-swig &&
               cd $(cygpath -u '$(Build.SourcesDirectory)') &&
               ./build.sh"
             timeoutInMinutes: 120
