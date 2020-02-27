@@ -180,7 +180,7 @@ index dcd5aac00..0d8d3721b 100755
  autoheader
  autoconf
 diff --git a/contrib/get-gmp b/contrib/get-gmp
-index 02602e456..ae23b0e51 100755
+index 02602e456..b2b7a9b41 100755
 --- a/contrib/get-gmp
 +++ b/contrib/get-gmp
 @@ -11,7 +11,7 @@
@@ -192,6 +192,14 @@ index 02602e456..ae23b0e51 100755
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
  
+@@ -28,6 +28,7 @@ echo
+   webget https://gmplib.org/download/gmp/gmp-$GMPVERSION.tar.bz2 gmp-$GMPVERSION.tar.bz2 &&
+   tar xfj gmp-$GMPVERSION.tar.bz2 &&
+   cd gmp-$GMPVERSION &&
++  sed -i 's/\*-\*-mingw\*/*-*-mingw* | *-*-msys/' configure
+   ./configure ${HOST} --prefix="$gmpprefix" --enable-cxx ${BUILD_TYPE} &&
+   make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}" &&
+   make install
 diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
 index 3423a3e1b..0acae2147 100644
 --- a/src/bindings/java/CMakeLists.txt
