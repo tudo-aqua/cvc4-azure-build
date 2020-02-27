@@ -32,6 +32,7 @@ stages:
               UBUNTU_MIRROR: $(UbuntuMirror)
               SWIG_VERSION: $(SwigVersion)
               SWIG_BUILD: $(SwigBuild)
+            timeoutInMinutes: 120
           - publish: 'build'
 
       - job: OSX
@@ -42,6 +43,7 @@ stages:
               brew install automake coreutils
               export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
               ./build.sh
+            timeoutInMinutes: 120
           - publish: 'build'
 
       - job: Windows
@@ -54,4 +56,5 @@ stages:
               "pacman -S --noconfirm git mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-swig" &&
               cd $(cygpath -u '$(Build.SourcesDirectory)') &&
               ./build.sh"
+            timeoutInMinutes: 120
           - publish: 'build'
