@@ -102,10 +102,10 @@ index 670fc3b41..729163649 100755
  cd ../..
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
-index 000000000..ddd4d46d6
+index 000000000..1ae9948f9
 --- /dev/null
 +++ b/contrib/get-cln
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,30 @@
 +#!/bin/bash
 +
 +source "$(dirname "$0")/get-script-header.sh"
@@ -132,11 +132,15 @@ index 000000000..ddd4d46d6
 +  make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}" &&
 +  make install
 +) || exit 1
++
++echo
++echo ===================== Now configure CVC4 with =====================
++echo ./configure.sh --cln
 diff --git a/contrib/get-drat2er b/contrib/get-drat2er
-index e465ab3d4..9f672730a 100755
+index e465ab3d4..af0abade3 100755
 --- a/contrib/get-drat2er
 +++ b/contrib/get-drat2er
-@@ -12,6 +12,18 @@ cd drat2er
+@@ -12,6 +12,17 @@ cd drat2er
  
  git checkout api
  
@@ -146,11 +150,10 @@ index e465ab3d4..9f672730a 100755
 +int main() { std::experimental::optional<int> o; }
 +EOF
 +then
-+  rm a.out
++  rm test-working-experimental-optional
 +else
 +  echo "add_compile_definitions(CLI11_EXPERIMENTAL_OPTIONAL=0)" >> CMakeLists.txt
 +fi
-+rm -f a.out
 +
  mkdir build
  
