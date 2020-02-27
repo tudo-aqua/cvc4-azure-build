@@ -55,6 +55,8 @@ stages:
               C:\msys64\usr\bin\bash --login -c
               "pacman -S --noconfirm git mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-swig &&
               cd $(cygpath -u '$(Build.SourcesDirectory)') &&
+              which gcc;
+              ls /usr/bin;
               ./build.sh"
             timeoutInMinutes: 120
           - publish: 'build'
