@@ -41,7 +41,7 @@ stages:
         steps:
           - bash: |
               brew install automake coreutils gnu-sed
-              export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+              export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
               ./build.sh
             timeoutInMinutes: 120
           - publish: 'build'
