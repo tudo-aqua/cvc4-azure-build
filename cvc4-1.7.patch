@@ -79,14 +79,14 @@ index 8125a583b..9f955273d 100644
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
 diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
-index 670fc3b41..b44e0fe79 100755
+index 670fc3b41..09120aa2d 100755
 --- a/contrib/get-antlr-3.4
 +++ b/contrib/get-antlr-3.4
 @@ -48,6 +48,8 @@ cd libantlr3c-3.4
  # warnings about the ANTLR library having moved
  PREFIX=$(realpath `pwd`/../..)
  
-+sed -i '/-mingw32\*/ i\          | -msys* \\' config.sub
++sed -i '/-mingw32\*/ i\          | -msys \\' config.sub
 +
  # Make antlr3debughandlers.c empty to avoid unreferenced symbols
  rm -rf src/antlr3debughandlers.c && touch src/antlr3debughandlers.c
@@ -104,7 +104,7 @@ index 670fc3b41..b44e0fe79 100755
  cd src/libantlr3c-3.4
  make clean
  
-+sed -i '/-mingw32\*/ i\          | -msys* \\' config.sub
++sed -i '/-mingw32\*/ i\          | -msys \\' config.sub
 +
  if [ ${MACHINE_TYPE} == 'x86_64' ]; then
    # 64-bit stuff here
