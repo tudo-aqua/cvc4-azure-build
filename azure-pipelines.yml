@@ -60,6 +60,7 @@ stages:
               mingw-w64-x86_64-gcc
               mingw-w64-x86_64-make
               mingw-w64-x86_64-swig &&
+              ln -s /mingw64/bin/mingw32-make.exe /mingw64/bin/make.exe &&
               export PATH=""${PATH}:/mingw64/bin:/mingw32/bin"" &&
               cd $(cygpath -u '$(Build.SourcesDirectory)') &&
               ./build.sh"
