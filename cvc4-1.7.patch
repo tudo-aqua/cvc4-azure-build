@@ -79,7 +79,7 @@ index 8125a583b..9f955273d 100644
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
 diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
-index 670fc3b41..09120aa2d 100755
+index 670fc3b41..c990ed9b7 100755
 --- a/contrib/get-antlr-3.4
 +++ b/contrib/get-antlr-3.4
 @@ -48,6 +48,8 @@ cd libantlr3c-3.4
@@ -91,15 +91,6 @@ index 670fc3b41..09120aa2d 100755
  # Make antlr3debughandlers.c empty to avoid unreferenced symbols
  rm -rf src/antlr3debughandlers.c && touch src/antlr3debughandlers.c
  if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-@@ -59,7 +61,7 @@ else
- fi
- 
- cp Makefile Makefile.orig
--sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
-+sed 's,^\(CFLAGS = .*\),\1 -fexceptions,;s/$(SHELL)/"$(SHELL)"/' Makefile.orig > Makefile
- make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
- make install
- 
 @@ -73,6 +75,8 @@ mv lib/libantlr3c.a lib/libantlr3c-static.a
  cd src/libantlr3c-3.4
  make clean
@@ -109,17 +100,14 @@ index 670fc3b41..09120aa2d 100755
  if [ ${MACHINE_TYPE} == 'x86_64' ]; then
    # 64-bit stuff here
    ./configure --enable-64bit --with-pic --disable-antlrdebug --prefix="${PREFIX}" $ANTLR_CONFIGURE_ARGS $BUILD_TYPE
-@@ -80,9 +84,8 @@ else
+@@ -80,7 +84,6 @@ else
    # 32-bit stuff here
    ./configure --with-pic --disable-antlrdebug --prefix="${PREFIX}" $ANTLR_CONFIGURE_ARGS $BUILD_TYPE
  fi
 -
  cp Makefile Makefile.orig
--sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
-+sed 's,^\(CFLAGS = .*\),\1 -fexceptions,;s/$(SHELL)/"$(SHELL)"/' Makefile.orig > Makefile
+ sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
  make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
- make install
- cd ../..
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
 index 000000000..1ae9948f9
