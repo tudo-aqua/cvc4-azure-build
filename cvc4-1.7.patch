@@ -192,7 +192,7 @@ index dcd5aac00..0d8d3721b 100755
  autoheader
  autoconf
 diff --git a/contrib/get-gmp b/contrib/get-gmp
-index 02602e456..6545ec4e8 100755
+index 02602e456..ae23b0e51 100755
 --- a/contrib/get-gmp
 +++ b/contrib/get-gmp
 @@ -11,7 +11,7 @@
@@ -200,7 +200,7 @@ index 02602e456..6545ec4e8 100755
  source "$(dirname "$0")/get-script-header.sh"
  
 -[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static"
-+[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --with-pic"
++[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --enable-fat --with-pic"
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
  
