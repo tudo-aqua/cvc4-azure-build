@@ -55,7 +55,7 @@ stages:
           - script: cinst --no-progress msys2 --params "/InstallDir=C:\msys64"
           - script: >
               C:\msys64\usr\bin\bash --login -c
-              "set -euxo pipefail
+              "set -euxo pipefail &&
               pacman -S --noconfirm
               git
               mingw-w64-x86_64-boost
