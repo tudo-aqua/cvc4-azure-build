@@ -22,7 +22,7 @@ patch="$(pwd)/cvc4-${CVC4_VERSION}.patch"
 git clone https://github.com/CVC4/CVC4.git --branch ${CVC4_VERSION} src
 pushd src
 
-git apply --ignore-space-change --ignore-whitespace -v "${patch}"
+git apply --ignore-space-change --ignore-whitespace "${patch}"
 
 for dependency in antlr-3.4 gmp abc cadical cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
   contrib/get-$dependency
