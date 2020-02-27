@@ -40,7 +40,7 @@ stages:
           vmImage: macOS-latest
         steps:
           - bash: |
-              brew install automake coreutils
+              brew install automake coreutils gnu-sed
               export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
               ./build.sh
             timeoutInMinutes: 120
