@@ -54,7 +54,12 @@ stages:
           - script: >
               C:\msys64\usr\bin\bash --login -c
               "pacman -S --noconfirm
-              git mingw-w64-x86_64-boost mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-swig &&
+              git
+              mingw-w64-x86_64-boost
+              mingw-w64-x86_64-cmake
+              mingw-w64-x86_64-gcc
+              mingw-w64-x86_64-make
+              mingw-w64-x86_64-swig &&
               export PATH=""${PATH}:/mingw64/bin:/mingw32/bin"" &&
               cd $(cygpath -u '$(Build.SourcesDirectory)') &&
               ./build.sh"
