@@ -79,7 +79,7 @@ index 8125a583b..9f955273d 100644
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
 diff --git a/contrib/get-abc b/contrib/get-abc
-index fa90f240f..d2f5e9fa8 100755
+index fa90f240f..6a5f60e52 100755
 --- a/contrib/get-abc
 +++ b/contrib/get-abc
 @@ -24,6 +24,10 @@ grep -v 'libSupport\.c' src/base/main/module.make.orig > src/base/main/module.ma
@@ -88,7 +88,7 @@ index fa90f240f..d2f5e9fa8 100755
  
 +sed -i -z 's/#if defined(WIN32) && !defined(__cplusplus)/#if 0/3' src/base/cmd/cmd.c
 +sed -i -z 's/#if defined(WIN32) && !defined(__cplusplus)/#if 0/1' src/base/cmd/cmdLoad.c
-+sed -i 's/$(VERBOSE)rm -rvf $(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE) $(OBJ:\.o=\.d)/$(foreach file,$(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE),$(VERBOSE)rm -rvf $(file);)' Makefile
++sed -i 's/$(VERBOSE)rm -rvf $(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE) $(OBJ:\.o=\.d)/$(foreach file,$(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE),$(VERBOSE)rm -rvf $(file);)/' Makefile
 +
  # Build optimized, without readline, without pthreads.
  # These aren't necessary for our usage and we don't want the dependencies.
