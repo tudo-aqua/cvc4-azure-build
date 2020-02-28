@@ -124,6 +124,19 @@ index 670fc3b41..c990ed9b7 100755
  cp Makefile Makefile.orig
  sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
  make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
+diff --git a/contrib/get-cadical b/contrib/get-cadical
+index 359afaaa7..98e30da93 100755
+--- a/contrib/get-cadical
++++ b/contrib/get-cadical
+@@ -13,7 +13,7 @@ git clone https://github.com/arminbiere/cadical cadical
+ cd cadical
+ git checkout $commit
+ 
+-CXXFLAGS="-fPIC" ./configure && make -j$(nproc)
++CXXFLAGS="-fPIC" ./configure -q && make -j$(nproc)
+ 
+ echo
+ echo "Using CaDiCaL commit $commit"
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
 index 000000000..1ae9948f9
