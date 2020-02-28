@@ -35,11 +35,11 @@ stages:
           - task: Bash@3
             inputs:
               filePath: 'build.sh'
-              env:
-                BUILD_NAME: $(VMImage)
-                CVC4_VERSION: $(CVC4Version)
-                UBUNTU_MIRROR: $(UbuntuMirror)
-                UBUNTU_SWIG_BUILD: $(UbuntuSwigBuild)
-                UBUNTU_SWIG_VERSION: $(UbuntuSwigVersion)
-              timeoutInMinutes: 120
+            env:
+              BUILD_NAME: $(VMImage)
+              CVC4_VERSION: $(CVC4Version)
+              UBUNTU_MIRROR: $(UbuntuMirror)
+              UBUNTU_SWIG_BUILD: $(UbuntuSwigBuild)
+              UBUNTU_SWIG_VERSION: $(UbuntuSwigVersion)
+            timeoutInMinutes: 120
           - publish: 'build'
