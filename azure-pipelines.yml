@@ -17,7 +17,7 @@ stages:
   - stage: Build
     displayName: 'Run Build Script on all Platforms'
     jobs:
-      - job: Linux
+      - job: Build
         variables:
           CVC4Version: '1.7'
           UbuntuMirror: 'https://azure.archive.ubuntu.com/ubuntu'
