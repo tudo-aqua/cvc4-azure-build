@@ -38,7 +38,7 @@ prepare-swig-source() {
     "${1}/pool/universe/s/swig/swig_${3}.debian.tar.xz"
   sudo apt-get install -y bison debhelper dh-autoreconf dpkg-dev fakeroot libpcre3-dev
 
-  dpkg-source -x "swig_${2}-${3}.dsc"
+  dpkg-source -x "swig_${3}.dsc"
   popd
 }
 
