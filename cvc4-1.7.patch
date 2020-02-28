@@ -78,72 +78,6 @@ index 8125a583b..9f955273d 100644
  include(FindPackageHandleStandardArgs)
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
-diff --git a/contrib/get-abc b/contrib/get-abc
-index fa90f240f..37a1f7118 100755
---- a/contrib/get-abc
-+++ b/contrib/get-abc
-@@ -24,6 +24,11 @@ grep -v 'libSupport\.c' src/base/main/module.make.orig > src/base/main/module.ma
- cp src/base/main/mainInit.c src/base/main/mainInit.c.orig
- sed 's,\( *\)\(.*Libs_Init(\),\1//\2,;s,\( *\)\(.*Libs_End(\),\1//\2,' src/base/main/mainInit.c.orig > src/base/main/mainInit.c
- 
-+sed -i -z 's/#if defined(WIN32) && !defined(__cplusplus)/#if 0/3' src/base/cmd/cmd.c
-+sed -i -z 's/#if defined(WIN32) && !defined(__cplusplus)/#if 0/1' src/base/cmd/cmdLoad.c
-+sed -i '1idefine nl\n\n\nendef' Makefile
-+sed -i 's/$(VERBOSE)rm -rvf $(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE) $(OBJ:\.o=\.d)/$(VERBOSE)$(foreach file,$(PROG) lib$(PROG)\.a $(OBJ) $(GARBAGE),rm -rvf $(file)${nl})/' Makefile
-+
- # Build optimized, without readline, without pthreads.
- # These aren't necessary for our usage and we don't want the dependencies.
- make -j$(nproc) libabc.a OPTFLAGS=-O ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1
-diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
-index 670fc3b41..c990ed9b7 100755
---- a/contrib/get-antlr-3.4
-+++ b/contrib/get-antlr-3.4
-@@ -48,6 +48,8 @@ cd libantlr3c-3.4
- # warnings about the ANTLR library having moved
- PREFIX=$(realpath `pwd`/../..)
- 
-+sed -i '/-mingw32\*/ i\          | -msys \\' config.sub
-+
- # Make antlr3debughandlers.c empty to avoid unreferenced symbols
- rm -rf src/antlr3debughandlers.c && touch src/antlr3debughandlers.c
- if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-@@ -73,6 +75,8 @@ mv lib/libantlr3c.a lib/libantlr3c-static.a
- cd src/libantlr3c-3.4
- make clean
- 
-+sed -i '/-mingw32\*/ i\          | -msys \\' config.sub
-+
- if [ ${MACHINE_TYPE} == 'x86_64' ]; then
-   # 64-bit stuff here
-   ./configure --enable-64bit --with-pic --disable-antlrdebug --prefix="${PREFIX}" $ANTLR_CONFIGURE_ARGS $BUILD_TYPE
-@@ -80,7 +84,6 @@ else
-   # 32-bit stuff here
-   ./configure --with-pic --disable-antlrdebug --prefix="${PREFIX}" $ANTLR_CONFIGURE_ARGS $BUILD_TYPE
- fi
--
- cp Makefile Makefile.orig
- sed 's,^\(CFLAGS = .*\),\1 -fexceptions,' Makefile.orig > Makefile
- make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}"
-diff --git a/contrib/get-cadical b/contrib/get-cadical
-index 359afaaa7..05aeb2091 100755
---- a/contrib/get-cadical
-+++ b/contrib/get-cadical
-@@ -13,7 +13,14 @@ git clone https://github.com/arminbiere/cadical cadical
- cd cadical
- git checkout $commit
- 
--CXXFLAGS="-fPIC" ./configure && make -j$(nproc)
-+sed -i '1d;$d' src/profile.hpp
-+for file in app.cpp app.hpp main.cpp signal.cpp signal.hpp; do
-+  sed -i '1i#if 0' "src/${file}"
-+  echo '#endif' >> "src/${file}"
-+done
-+echo 'int main() {}' >> src/main.cpp
-+
-+CXXFLAGS="-fPIC" ./configure -q && make -j$(nproc)
- 
- echo
- echo "Using CaDiCaL commit $commit"
 diff --git a/contrib/get-cln b/contrib/get-cln
 new file mode 100755
 index 000000000..1ae9948f9
@@ -216,7 +150,7 @@ index dcd5aac00..0d8d3721b 100755
  autoheader
  autoconf
 diff --git a/contrib/get-gmp b/contrib/get-gmp
-index 02602e456..b2b7a9b41 100755
+index 02602e456..ae23b0e51 100755
 --- a/contrib/get-gmp
 +++ b/contrib/get-gmp
 @@ -11,7 +11,7 @@
@@ -228,16 +162,8 @@ index 02602e456..b2b7a9b41 100755
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
  
-@@ -28,6 +28,7 @@ echo
-   webget https://gmplib.org/download/gmp/gmp-$GMPVERSION.tar.bz2 gmp-$GMPVERSION.tar.bz2 &&
-   tar xfj gmp-$GMPVERSION.tar.bz2 &&
-   cd gmp-$GMPVERSION &&
-+  sed -i 's/\*-\*-mingw\*/*-*-mingw* | *-*-msys/' configure
-   ./configure ${HOST} --prefix="$gmpprefix" --enable-cxx ${BUILD_TYPE} &&
-   make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}" &&
-   make install
 diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
-index 3423a3e1b..0acae2147 100644
+index 3423a3e1b..b5545e3f1 100644
 --- a/src/bindings/java/CMakeLists.txt
 +++ b/src/bindings/java/CMakeLists.txt
 @@ -14,6 +14,7 @@ else()
@@ -259,7 +185,7 @@ index 3423a3e1b..0acae2147 100644
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__ostream.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__shared_ptrT_CVC4__SygusPrintCallback_t.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__string.java
-@@ -241,5 +239,22 @@ set(gen_java_files
+@@ -241,5 +239,21 @@ set(gen_java_files
    ${CMAKE_CURRENT_BINARY_DIR}/vectorVectorExpr.java
  )
  
@@ -281,4 +207,3 @@ index 3423a3e1b..0acae2147 100644
  add_jar(cvc4jar SOURCES ${gen_java_files} OUTPUT_NAME CVC4)
 +install_jar(cvc4jar DESTINATION share/cvc4)
  add_dependencies(cvc4jar cvc4jni)
-+

@@ -14,24 +14,92 @@
 
 set -euxo pipefail
 
-CVC4_VERSION=1.7
+prepare-macOS-latest() {
+  brew install automake coreutils
+  export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+}
 
-prefix="$(pwd)/build"
-patch="$(pwd)/cvc4-${CVC4_VERSION}.patch"
+prepare-ubuntu-latest() {
+  if apt-cache show swig4.0; then
+    sudo apt-get install -y swig4.0
+  else
+    prepare-swig-source "${UBUNTU_MIRROR}" "${UBUNTU_SWIG_VERSION}" "${UBUNTU_SWIG_VERSION}-${UBUNTU_SWIG_BUILD}"
+    build-swig-deb "${UBUNTU_SWIG_VERSION}"
+    install-swig-deb "${UBUNTU_SWIG_VERSION}-${UBUNTU_SWIG_BUILD}"
+  fi
+}
 
-git clone https://github.com/CVC4/CVC4.git --branch ${CVC4_VERSION} src
-pushd src
+prepare-swig-source() {
+  mkdir swig
+  cd swig
+  wget \
+    "${1}/pool/universe/s/swig/swig_${3}.dsc" \
+    "${1}/pool/universe/s/swig/swig_${2}.orig.tar.gz" \
+    "${1}/pool/universe/s/swig/swig_${3}.debian.tar.xz"
+  sudo apt-get install -y bison debhelper dh-autoreconf dpkg-dev fakeroot libpcre3-dev
 
-git apply --ignore-space-change --ignore-whitespace "${patch}"
+  dpkg-source -x "swig_${2}-${3}.dsc"
+}
 
-for dependency in antlr-3.4 gmp abc cadical cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
-  contrib/get-$dependency
-done
+build-swig-deb() {
+  cd "swig/swig-${1}"
+  dpkg-buildpackage -rfakeroot -b
+}
 
-./configure.sh --gpl --abc --cadical --cln --cryptominisat --drat2er --lfsc --glpk --symfpu --language-bindings=java \
-  --prefix="${prefix}"
-pushd build
-make -j "$(nproc)" install
-popd
+install-swig-deb() {
+  cd swig
+  sudo dpkg -i "swig_${1}_all.deb" "swig4.0_${1}_amd64.deb" || sudo apt-get install -f
+}
 
-popd
+prepare-cvc4() {
+  git clone https://github.com/CVC4/CVC4.git --branch "${1}" src
+  cd src
+  git apply --ignore-space-change --ignore-whitespace "${2}"
+}
+
+install-dependencies() {
+  cd src
+  # GMP is required by CLN
+  for dependency in abc antlr-3.4 cadical gmp cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
+    contrib/get-$dependency
+  done
+}
+
+install-cvc4() {
+  FLAGS=(--abc --cadical --cryptominisat --drat2er --lfsc --symfpu "--language-bindings=java"
+    "--name=build-${2}" "--prefix=${1}")
+  GPL_FLAGS=(--gpl --cln --glpk)
+
+  cd src
+  case "${2}" in
+  gpl)
+    ./configure.sh "${FLAGS[*]} ${GPL_FLAGS[*]}"
+    ;;
+  permissive)
+    ./configure.sh "${FLAGS[*]}"
+    ;;
+  esac
+  cd "build-${2}"
+  make -j "$(nproc)" install
+}
+
+finish-macOS-latest() {
+  cd build/lib
+  for file in *.dylib *.jnilib; do
+    install_name_tool \
+      -change '@rpath/libcvc4.6.dylib' '@loader_path/libcvc4.6.dylib' \
+      -change '@rpath/libcvc4parser.6.dylib' '@loader_path/libcvc4parser.6.dylib' "${file}"
+    strip -s "${file}"
+  done
+}
+
+finish-ubuntu-latest() {
+  strip -s -- build/lib/*.so
+}
+
+"prepare-${BUILD_NAME}"
+prepare-cvc4 "${CVC4_VERSION}" "$(pwd)/cvc4-${CVC4_VERSION}.patch"
+install-dependencies
+install-cvc4 "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-gpl" gpl
+install-cvc4 "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-permissive" permissive
+"finish-${BUILD_NAME}"

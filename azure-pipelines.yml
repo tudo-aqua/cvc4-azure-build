@@ -19,53 +19,25 @@ stages:
     jobs:
       - job: Linux
         variables:
-          UbuntuMirror: 'https://mirrors.ocf.berkeley.edu/ubuntu'
-          SwigVersion: '4.0.1'
-          SwigBuild: '5'
+          CVC4Version: '1.7'
+          UbuntuMirror: 'https://azure.archive.ubuntu.com/ubuntu'
+          UbuntuSwigBuild: '5'
+          UbuntuSwigVersion: '4.0.1'
+        strategy:
+          matrix:
+            Linux:
+              VMImage: ubuntu-latest
+            MacOS:
+              VMImage: macOS-latest
         pool:
-          vmImage: ubuntu-latest
+          vmImage: $(VMImage)
         steps:
-          - bash: |
-              set -euxo pipefail
-              ./ubuntu-install-swig4.sh
-              ./build.sh
+          - bash: ./build.sh
             env:
+              BUILD_NAME: $(VMImage)
+              CVC4_VERSION: $(CVC4Version)
               UBUNTU_MIRROR: $(UbuntuMirror)
-              SWIG_VERSION: $(SwigVersion)
-              SWIG_BUILD: $(SwigBuild)
-            timeoutInMinutes: 120
-          - publish: 'build'
-
-      - job: OSX
-        pool:
-          vmImage: macOS-latest
-        steps:
-          - bash: |
-              set -euxo pipefail
-              brew install automake coreutils gnu-sed
-              export PATH="/usr/local/opt/coreutils/libexec/gnubin:/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
-              ./build.sh
-            timeoutInMinutes: 120
-          - publish: 'build'
-
-      - job: Windows
-        pool:
-          vmImage: windows-latest
-        steps:
-          - script: cinst --no-progress msys2 --params "/InstallDir=C:\msys64"
-          - script: >
-              C:\msys64\usr\bin\bash --login -c
-              "set -euxo pipefail &&
-              pacman -S --noconfirm
-              git
-              mingw-w64-x86_64-boost
-              mingw-w64-x86_64-cmake
-              mingw-w64-x86_64-gcc
-              mingw-w64-x86_64-make
-              mingw-w64-x86_64-swig &&
-              ln -s /mingw64/bin/mingw32-make.exe /mingw64/bin/make.exe &&
-              export PATH=""${PATH}:/mingw64/bin:/mingw32/bin"" &&
-              cd $(cygpath -u '$(Build.SourcesDirectory)') &&
-              ./build.sh"
+              UBUNTU_SWIG_BUILD: $(UbuntuSwigBuild)
+              UBUNTU_SWIG_VERSION: $(UbuntuSwigVersion)
             timeoutInMinutes: 120
           - publish: 'build'
