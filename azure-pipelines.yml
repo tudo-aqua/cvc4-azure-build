@@ -20,7 +20,7 @@ stages:
       - job: Build
         variables:
           CVC4Version: '1.7'
-          UbuntuMirror: 'https://azure.archive.ubuntu.com/ubuntu'
+          UbuntuMirror: 'http://azure.archive.ubuntu.com/ubuntu'
           UbuntuSwigBuild: '5'
           UbuntuSwigVersion: '4.0.1'
         strategy:
