@@ -33,6 +33,7 @@ stages:
           vmImage: $(VMImage)
         steps:
           - bash: build.sh
+            targetType: 'filePath'
             env:
               BUILD_NAME: $(VMImage)
               CVC4_VERSION: $(CVC4Version)
