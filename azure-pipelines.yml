@@ -32,7 +32,7 @@ stages:
         pool:
           vmImage: $(VMImage)
         steps:
-          - bash: ./build.sh
+          - bash: build.sh
             env:
               BUILD_NAME: $(VMImage)
               CVC4_VERSION: $(CVC4Version)
