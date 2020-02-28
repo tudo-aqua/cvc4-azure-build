@@ -31,7 +31,7 @@ prepare-ubuntu-latest() {
 
 prepare-swig-source() {
   mkdir swig
-  cd swig
+  pushd swig
   wget \
     "${1}/pool/universe/s/swig/swig_${3}.dsc" \
     "${1}/pool/universe/s/swig/swig_${2}.orig.tar.gz" \
@@ -39,30 +39,33 @@ prepare-swig-source() {
   sudo apt-get install -y bison debhelper dh-autoreconf dpkg-dev fakeroot libpcre3-dev
 
   dpkg-source -x "swig_${2}-${3}.dsc"
+  popd
 }
 
 build-swig-deb() {
-  cd "swig/swig-${1}"
+  pushd "swig/swig-${1}"
   dpkg-buildpackage -rfakeroot -b
+  popd
 }
 
 install-swig-deb() {
-  cd swig
-  sudo dpkg -i "swig_${1}_all.deb" "swig4.0_${1}_amd64.deb" || sudo apt-get install -f
+  sudo dpkg -i "swig/swig_${1}_all.deb" "swig/swig4.0_${1}_amd64.deb" || sudo apt-get install -f
 }
 
 prepare-cvc4() {
   git clone https://github.com/CVC4/CVC4.git --branch "${1}" src
-  cd src
+  pushd src
   git apply --ignore-space-change --ignore-whitespace "${2}"
+  popd
 }
 
 install-dependencies() {
-  cd src
+  pushd src
   # GMP is required by CLN
   for dependency in abc antlr-3.4 cadical gmp cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
     contrib/get-$dependency
   done
+  popd
 }
 
 install-cvc4() {
@@ -70,7 +73,7 @@ install-cvc4() {
     "--name=build-${2}" "--prefix=${1}")
   GPL_FLAGS=(--gpl --cln --glpk)
 
-  cd src
+  pushd src
   case "${2}" in
   gpl)
     ./configure.sh "${FLAGS[*]} ${GPL_FLAGS[*]}"
@@ -79,18 +82,23 @@ install-cvc4() {
     ./configure.sh "${FLAGS[*]}"
     ;;
   esac
-  cd "build-${2}"
+
+  pushd "build-${2}"
   make -j "$(nproc)" install
+  popd
+
+  popd
 }
 
 finish-macOS-latest() {
-  cd build/lib
+  pushd build/lib
   for file in *.dylib *.jnilib; do
     install_name_tool \
       -change '@rpath/libcvc4.6.dylib' '@loader_path/libcvc4.6.dylib' \
       -change '@rpath/libcvc4parser.6.dylib' '@loader_path/libcvc4parser.6.dylib' "${file}"
     strip -s "${file}"
   done
+  popd
 }
 
 finish-ubuntu-latest() {
