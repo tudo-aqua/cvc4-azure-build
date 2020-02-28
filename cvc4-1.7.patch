@@ -78,6 +78,19 @@ index 8125a583b..9f955273d 100644
  include(FindPackageHandleStandardArgs)
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
  
+diff --git a/contrib/get-abc b/contrib/get-abc
+index fa90f240f..6fe2e6b4a 100755
+--- a/contrib/get-abc
++++ b/contrib/get-abc
+@@ -24,6 +24,8 @@ grep -v 'libSupport\.c' src/base/main/module.make.orig > src/base/main/module.ma
+ cp src/base/main/mainInit.c src/base/main/mainInit.c.orig
+ sed 's,\( *\)\(.*Libs_Init(\),\1//\2,;s,\( *\)\(.*Libs_End(\),\1//\2,' src/base/main/mainInit.c.orig > src/base/main/mainInit.c
+ 
++sed -i -z 's/#if defined(WIN32) && !defined(__cplusplus)/#if 0/3' src/base/cmd/cmd.c
++
+ # Build optimized, without readline, without pthreads.
+ # These aren't necessary for our usage and we don't want the dependencies.
+ make -j$(nproc) libabc.a OPTFLAGS=-O ABC_USE_NO_READLINE=1 ABC_USE_NO_PTHREADS=1
 diff --git a/contrib/get-antlr-3.4 b/contrib/get-antlr-3.4
 index 670fc3b41..c990ed9b7 100755
 --- a/contrib/get-antlr-3.4
