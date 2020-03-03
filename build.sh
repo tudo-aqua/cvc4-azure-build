@@ -103,6 +103,8 @@ install-cvc4() {
 }
 
 postprocess-cvc4() {
+  find "${1}" -type l -delete
+
   pushd "${1}/lib"
   for file in *.dylib *.jnilib; do
     install_name_tool \
@@ -110,7 +112,7 @@ postprocess-cvc4() {
       -change '@rpath/libcvc4parser.6.dylib' '@loader_path/libcvc4parser.6.dylib' "${file}"
     strip -x - "${file}"
   done
-  strip -s -- *.so.*
+  strip -s -- *.so
   popd
 }
 
