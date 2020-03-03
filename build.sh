@@ -108,8 +108,9 @@ postprocess-cvc4() {
     install_name_tool \
       -change '@rpath/libcvc4.6.dylib' '@loader_path/libcvc4.6.dylib' \
       -change '@rpath/libcvc4parser.6.dylib' '@loader_path/libcvc4parser.6.dylib' "${file}"
+    strip -x - "${file}"
   done
-  strip -s -- *.dylib *.jnilib *.so
+  strip -s -- *.so.*
   popd
 }
 
