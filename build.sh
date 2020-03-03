@@ -91,7 +91,7 @@ install-cvc4() {
 }
 
 finish-macOS-latest() {
-  pushd build/lib
+  pushd "${1}/lib"
   for file in *.dylib *.jnilib; do
     install_name_tool \
       -change '@rpath/libcvc4.6.dylib' '@loader_path/libcvc4.6.dylib' \
@@ -102,12 +102,13 @@ finish-macOS-latest() {
 }
 
 finish-ubuntu-latest() {
-  strip -s -- build/lib/*.so
+  strip -s -- "${1}/lib/"*.so
 }
 
 "prepare-${BUILD_NAME}"
 prepare-cvc4 "${CVC4_VERSION}" "$(pwd)/cvc4-${CVC4_VERSION}.patch"
 install-dependencies
 install-cvc4 "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-gpl" gpl
+"finish-${BUILD_NAME}" "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-gpl"
 install-cvc4 "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-permissive" permissive
-"finish-${BUILD_NAME}"
+"finish-${BUILD_NAME}" "$(pwd)/build/cvc4-${CVC4_VERSION}-${BUILD_NAME}-permissive"
