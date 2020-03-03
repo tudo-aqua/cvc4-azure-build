@@ -163,7 +163,7 @@ index 02602e456..ae23b0e51 100755
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
  
 diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
-index 3423a3e1b..b5545e3f1 100644
+index 3423a3e1b..25bb5287b 100644
 --- a/src/bindings/java/CMakeLists.txt
 +++ b/src/bindings/java/CMakeLists.txt
 @@ -14,6 +14,7 @@ else()
@@ -174,7 +174,7 @@ index 3423a3e1b..b5545e3f1 100644
  
  # Create CVC4.jar from all generated *.java files.
  set(gen_java_files
-@@ -174,10 +175,7 @@ set(gen_java_files
+@@ -174,10 +175,8 @@ set(gen_java_files
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_ListenerCollection__Registration.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_MaybeT_CVC4__Rational_t.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_Type.java
@@ -182,10 +182,11 @@ index 3423a3e1b..b5545e3f1 100644
 -  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpz_class.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__istream.java
 -  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_t.java
++  ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_std__lessT_CVC4__Expr_t_t.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__ostream.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__shared_ptrT_CVC4__SygusPrintCallback_t.java
    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__string.java
-@@ -241,5 +239,21 @@ set(gen_java_files
+@@ -241,5 +240,19 @@ set(gen_java_files
    ${CMAKE_CURRENT_BINARY_DIR}/vectorVectorExpr.java
  )
  
@@ -193,13 +194,11 @@ index 3423a3e1b..b5545e3f1 100644
 +  list(APPEND gen_java_files
 +    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_cln__cl_I.java
 +    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_cln__cl_RA.java
-+    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_std__lessT_CVC4__Expr_t_t.java
 +  )
 +elseif(CVC4_USE_GMP_IMP)
 +  list(APPEND gen_java_files
 +    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpq_class.java
 +    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_mpz_class.java
-+    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_std__mapT_CVC4__Expr_CVC4__Expr_t.java
 +  )
 +endif()
 +
