@@ -76,10 +76,10 @@ install-cvc4() {
   pushd src
   case "${2}" in
   gpl)
-    ./configure.sh "${FLAGS[*]} ${GPL_FLAGS[*]}"
+    ./configure.sh "${FLAGS[@]}" "${GPL_FLAGS[@]}"
     ;;
   permissive)
-    ./configure.sh "${FLAGS[*]}"
+    ./configure.sh "${FLAGS[@]}"
     ;;
   esac
 
