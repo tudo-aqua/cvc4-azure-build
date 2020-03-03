@@ -1,8 +1,18 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7c700ab07..d8ce20ff7 100644
+index 7c700ab07..a4d8844bf 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -31,17 +31,6 @@ set(CMAKE_CXX_STANDARD 11)
+@@ -12,9 +12,6 @@ set(CVC4_RELEASE 0) # Release component of the version of CVC4.
+ # Extraversion component of the version of CVC4.
+ set(CVC4_EXTRAVERSION "")
+ 
+-# Shared library versioning. Increment SOVERSION for every new CVC4 release.
+-set(CVC4_SOVERSION 6)
+-
+ # Full release string for CVC4.
+ if(CVC4_RELEASE)
+   set(CVC4_RELEASE_STRING
+@@ -31,17 +28,6 @@ set(CMAKE_CXX_STANDARD 11)
  # plugins.
  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
  
@@ -20,7 +30,7 @@ index 7c700ab07..d8ce20ff7 100644
  #-----------------------------------------------------------------------------#
  
  include(Helpers)
-@@ -390,7 +379,7 @@ endif()
+@@ -390,7 +376,7 @@ endif()
  
  if(USE_CLN)
    set(GPL_LIBS "${GPL_LIBS} cln")
@@ -162,6 +172,18 @@ index 02602e456..ae23b0e51 100755
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
  
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 460c6c14d..9bdf62577 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -722,7 +722,6 @@ set_source_files_properties(${LIBCVC4_GEN_SRCS} PROPERTIES GENERATED TRUE)
+ add_library(cvc4 ${LIBCVC4_SRCS} ${LIBCVC4_GEN_SRCS})
+ install(TARGETS cvc4 DESTINATION lib)
+ 
+-set_target_properties(cvc4 PROPERTIES SOVERSION ${CVC4_SOVERSION})
+ target_compile_definitions(cvc4
+   PRIVATE
+     -D__BUILDING_CVC4LIB
 diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
 index 3423a3e1b..25bb5287b 100644
 --- a/src/bindings/java/CMakeLists.txt
@@ -206,3 +228,15 @@ index 3423a3e1b..25bb5287b 100644
  add_jar(cvc4jar SOURCES ${gen_java_files} OUTPUT_NAME CVC4)
 +install_jar(cvc4jar DESTINATION share/cvc4)
  add_dependencies(cvc4jar cvc4jni)
+diff --git a/src/parser/CMakeLists.txt b/src/parser/CMakeLists.txt
+index d79d7b22c..bb0170bd7 100644
+--- a/src/parser/CMakeLists.txt
++++ b/src/parser/CMakeLists.txt
+@@ -93,7 +93,6 @@ endforeach()
+ # libcvc4parser configuration
+ 
+ add_library(cvc4parser ${libcvc4parser_src_files})
+-set_target_properties(cvc4parser PROPERTIES SOVERSION ${CVC4_SOVERSION})
+ target_compile_definitions(cvc4parser PRIVATE -D__BUILDING_CVC4PARSERLIB)
+ target_link_libraries(cvc4parser cvc4 ${ANTLR_LIBRARIES})
+ target_include_directories(cvc4parser PRIVATE ${ANTLR_INCLUDE_DIR})

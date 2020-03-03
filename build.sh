@@ -103,8 +103,6 @@ install-cvc4() {
 }
 
 postprocess-cvc4() {
-  find "${1}" -type l -delete
-
   pushd "${1}/lib"
   for file in *.dylib *.jnilib; do
     install_name_tool \
