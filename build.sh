@@ -14,6 +14,13 @@
 
 set -euxo pipefail
 
+abort-if-missing() {
+  if [ -z "${!1}" ]; then
+    echo "No ${1} environment variable provided. Aborting." >&2
+    exit 1
+  fi
+}
+
 prepare-macOS-latest() {
   brew install automake coreutils
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
@@ -25,6 +32,9 @@ prepare-ubuntu-latest() {
   if apt-cache show swig4.0; then
     sudo apt-get install -y swig4.0
   else
+    abort-if-missing UBUNTU_MIRROR
+    abort-if-missing UBUNTU_SWIG_BUILD
+    abort-if-missing UBUNTU_SWIG_VERSION
     prepare-swig-source "${UBUNTU_MIRROR}" "${UBUNTU_SWIG_VERSION}" "${UBUNTU_SWIG_VERSION}-${UBUNTU_SWIG_BUILD}"
     build-swig-deb "${UBUNTU_SWIG_VERSION}"
     install-swig-deb "${UBUNTU_SWIG_VERSION}-${UBUNTU_SWIG_BUILD}"
@@ -102,6 +112,8 @@ postprocess-cvc4() {
   strip -s -- *.dylib *.jnilib *.so
   popd
 }
+
+abort-if-missing CVC4_VERSION
 
 if [ -z "${BUILD_NAME}" ]; then
   echo "No BUILD_NAME environment variable provided. Preparation will be skipped." >&2
