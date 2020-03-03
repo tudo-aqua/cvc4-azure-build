@@ -19,6 +19,8 @@ prepare-macOS-latest() {
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
 }
 
+prepare-local() { true; }
+
 prepare-ubuntu-latest() {
   if apt-cache show swig4.0; then
     sudo apt-get install -y swig4.0
@@ -101,6 +103,10 @@ postprocess-cvc4() {
   popd
 }
 
+if [ -z "${BUILD_NAME}" ]; then
+  echo "No BUILD_NAME environment variable provided. Preparation will be skipped." >&2
+  export BUILD_NAME=local
+fi
 
 "prepare-${BUILD_NAME}"
 prepare-cvc4 "${CVC4_VERSION}" "$(pwd)/cvc4-${CVC4_VERSION}.patch"
