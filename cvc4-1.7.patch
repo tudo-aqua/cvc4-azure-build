@@ -5,7 +5,7 @@ index 7c700ab07..a4d8844bf 100644
 @@ -12,9 +12,6 @@ set(CVC4_RELEASE 0) # Release component of the version of CVC4.
  # Extraversion component of the version of CVC4.
  set(CVC4_EXTRAVERSION "")
- 
+
 -# Shared library versioning. Increment SOVERSION for every new CVC4 release.
 -set(CVC4_SOVERSION 6)
 -
@@ -15,7 +15,7 @@ index 7c700ab07..a4d8844bf 100644
 @@ -31,17 +28,6 @@ set(CMAKE_CXX_STANDARD 11)
  # plugins.
  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
- 
+
 -# Embed the installation prefix as an RPATH in the executable such that the
 -# linker can find our libraries (such as libcvc4parser) when executing the cvc4
 -# binary. This is for example useful when installing CVC4 with a custom prefix
@@ -28,10 +28,10 @@ index 7c700ab07..a4d8844bf 100644
 -set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 -
  #-----------------------------------------------------------------------------#
- 
+
  include(Helpers)
 @@ -390,7 +376,7 @@ endif()
- 
+
  if(USE_CLN)
    set(GPL_LIBS "${GPL_LIBS} cln")
 -  find_package(CLN 1.2.2 REQUIRED)
@@ -46,13 +46,13 @@ index 7b2e6f0f4..8ff7a84ec 100644
 @@ -3,9 +3,18 @@
  # CLN_INCLUDE_DIR - the CLN include directory
  # CLN_LIBRARIES - Libraries needed to use CLN
- 
+
 -find_path(CLN_INCLUDE_DIR NAMES cln/cln.h)
 -find_library(CLN_LIBRARIES NAMES cln)
 +if(NOT CLN_HOME)
 +  set(CLN_HOME ${PROJECT_SOURCE_DIR}/cln-1.3.6)
 +endif()
- 
+
 +find_path(CLN_INCLUDE_DIR
 +          NAMES cln/cln.h
 +          PATHS ${CLN_HOME}/include
@@ -61,7 +61,7 @@ index 7b2e6f0f4..8ff7a84ec 100644
 +             NAMES cln
 +             PATHS ${CLN_HOME}/lib
 +             NO_DEFAULT_PATH)
- 
+
  if(CLN_INCLUDE_DIR)
    file(STRINGS
 diff --git a/cmake/FindGMP.cmake b/cmake/FindGMP.cmake
@@ -74,12 +74,12 @@ index 8125a583b..9f955273d 100644
    set(GMP_HOME ${PROJECT_SOURCE_DIR}/gmp-6.1.2)
 -  set(CHECK_SYSTEM_VERSION TRUE)
  endif()
- 
+
  find_path(GMP_INCLUDE_DIR
 @@ -21,11 +20,6 @@ find_library(GMP_LIBRARIES
               PATHS ${GMP_HOME}/lib
               NO_DEFAULT_PATH)
- 
+
 -if(CHECK_SYSTEM_VERSION)
 -  find_path(GMP_INCLUDE_DIR NAMES gmp.h gmpxx.h)
 -  find_library(GMP_LIBRARIES NAMES gmp)
@@ -87,51 +87,14 @@ index 8125a583b..9f955273d 100644
 -
  include(FindPackageHandleStandardArgs)
  find_package_handle_standard_args(GMP DEFAULT_MSG GMP_INCLUDE_DIR GMP_LIBRARIES)
- 
-diff --git a/contrib/get-cln b/contrib/get-cln
-new file mode 100755
-index 000000000..1ae9948f9
---- /dev/null
-+++ b/contrib/get-cln
-@@ -0,0 +1,30 @@
-+#!/bin/bash
-+
-+source "$(dirname "$0")/get-script-header.sh"
-+
-+[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --with-pic"
-+[ -n "$HOST" ] && HOST="--host=$HOST"
-+[ -z "$CLNVERSION" ] && CLNVERSION=1.3.6
-+
-+echo =============================================================================
-+echo
-+echo "Setting up CLN $CLNVERSION..."
-+echo
-+( set -ex
-+  gmpprefix="$(pwd)/gmp-1.2"
-+  mkdir cln-$CLNVERSION
-+  cd cln-$CLNVERSION
-+  clnprefix=`pwd` &&
-+  mkdir src &&
-+  cd src &&
-+  webget https://www.ginac.de/CLN/cln-$CLNVERSION.tar.bz2 cln-$CLNVERSION.tar.bz2 &&
-+  tar xfj cln-$CLNVERSION.tar.bz2 &&
-+  cd cln-$CLNVERSION &&
-+  ./configure ${HOST} --prefix="$clnprefix" --with-gmp="${gmpprefix}" ${BUILD_TYPE} &&
-+  make CFLAGS="${MAKE_CFLAGS}" CXXFLAGS="${MAKE_CXXFLAGS}" LDFLAGS="${MAKE_LDFLAGS}" &&
-+  make install
-+) || exit 1
-+
-+echo
-+echo ===================== Now configure CVC4 with =====================
-+echo ./configure.sh --cln
 diff --git a/contrib/get-drat2er b/contrib/get-drat2er
 index e465ab3d4..af0abade3 100755
 --- a/contrib/get-drat2er
 +++ b/contrib/get-drat2er
 @@ -12,6 +12,17 @@ cd drat2er
- 
+
  git checkout api
- 
+
 +# check for broken experimental/optional on OSX
 +if g++ -stc=gnu++14 -x c++ -o test-working-experimental-optional - <<'EOF'
 +#include <experimental/optional>
@@ -144,7 +107,7 @@ index e465ab3d4..af0abade3 100755
 +fi
 +
  mkdir build
- 
+
  cd build
 diff --git a/contrib/get-glpk-cut-log b/contrib/get-glpk-cut-log
 index dcd5aac00..0d8d3721b 100755
@@ -153,7 +116,7 @@ index dcd5aac00..0d8d3721b 100755
 @@ -15,7 +15,7 @@ webget https://github.com/timothy-king/glpk-cut-log/archive/$commit.zip glpk-cut
  unzip glpk-cut-log-$commit.zip
  cd glpk-cut-log-$commit
- 
+
 -libtoolize
 +if command -v libtoolize; then libtoolize; else glibtoolize; fi
  aclocal
@@ -164,14 +127,14 @@ index 02602e456..ae23b0e51 100755
 --- a/contrib/get-gmp
 +++ b/contrib/get-gmp
 @@ -11,7 +11,7 @@
- 
+
  source "$(dirname "$0")/get-script-header.sh"
- 
+
 -[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static"
 +[ -z "${BUILD_TYPE}" ] && BUILD_TYPE="--disable-shared --enable-static --enable-fat --with-pic"
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
- 
+
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 460c6c14d..9bdf62577 100644
 --- a/src/CMakeLists.txt
@@ -179,7 +142,7 @@ index 460c6c14d..9bdf62577 100644
 @@ -722,7 +722,6 @@ set_source_files_properties(${LIBCVC4_GEN_SRCS} PROPERTIES GENERATED TRUE)
  add_library(cvc4 ${LIBCVC4_SRCS} ${LIBCVC4_GEN_SRCS})
  install(TARGETS cvc4 DESTINATION lib)
- 
+
 -set_target_properties(cvc4 PROPERTIES SOVERSION ${CVC4_SOVERSION})
  target_compile_definitions(cvc4
    PRIVATE
@@ -193,7 +156,7 @@ index 3423a3e1b..25bb5287b 100644
  endif()
  swig_link_libraries(cvc4jni cvc4 cvc4parser ${JNI_LIBRARIRES})
 +install(TARGETS cvc4jni DESTINATION lib)
- 
+
  # Create CVC4.jar from all generated *.java files.
  set(gen_java_files
 @@ -174,10 +175,8 @@ set(gen_java_files
@@ -211,7 +174,7 @@ index 3423a3e1b..25bb5287b 100644
 @@ -241,5 +240,19 @@ set(gen_java_files
    ${CMAKE_CURRENT_BINARY_DIR}/vectorVectorExpr.java
  )
- 
+
 +if(CVC4_USE_CLN_IMP)
 +  list(APPEND gen_java_files
 +    ${CMAKE_CURRENT_BINARY_DIR}/SWIGTYPE_p_cln__cl_I.java
@@ -234,7 +197,7 @@ index d79d7b22c..bb0170bd7 100644
 +++ b/src/parser/CMakeLists.txt
 @@ -93,7 +93,6 @@ endforeach()
  # libcvc4parser configuration
- 
+
  add_library(cvc4parser ${libcvc4parser_src_files})
 -set_target_properties(cvc4parser PROPERTIES SOVERSION ${CVC4_SOVERSION})
  target_compile_definitions(cvc4parser PRIVATE -D__BUILDING_CVC4PARSERLIB)

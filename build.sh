@@ -22,13 +22,14 @@ abort-if-missing() {
 }
 
 prepare-macOS-latest() {
-  brew install automake coreutils
+  brew install automake coreutils swig
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
 }
 
 prepare-local() { true; }
 
 prepare-ubuntu-latest() {
+  sudo apt-get install flex libfl-dev
   if apt-cache show swig4.0; then
     sudo apt-get install -y swig4.0
   else
@@ -65,16 +66,21 @@ install-swig-deb() {
 }
 
 prepare-cvc4() {
-  git clone https://github.com/CVC4/CVC4.git --branch "${1}" src
+  git clone https://github.com/CVC4/CVC4.git src
   pushd src
-  git apply --ignore-space-change --ignore-whitespace "${2}"
+  git checkout tags/"${1}"
+  git apply --ignore-space-change --ignore-whitespace ../patch-all-versions.patch
+  if [ -e "${2}" ]; then
+    git apply --ignore-space-change --ignore-whitespace "${2}"
+  fi
   popd
 }
 
 install-dependencies() {
+  pip install toml
   pushd src
   # GMP is required by CLN
-  for dependency in abc antlr-3.4 cadical gmp cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
+  for dependency in abc antlr-3.4 cadical gmp-dev cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
     contrib/get-$dependency
   done
   popd
