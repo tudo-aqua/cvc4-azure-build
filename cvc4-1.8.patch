@@ -97,3 +97,23 @@ index f8a301a89..72f3bd372 100755
  [ -n "$HOST" ] && HOST="--host=$HOST"
  [ -z "$GMPVERSION" ] && GMPVERSION=6.1.2
 
+diff --git a/src/bindings/java/CMakeLists.txt b/src/bindings/java/CMakeLists.txt
+index 8e919db86..7e888e721 100644
+--- a/src/bindings/java/CMakeLists.txt
++++ b/src/bindings/java/CMakeLists.txt
+@@ -14,6 +14,7 @@ else()
+   swig_add_library(cvc4jni LANGUAGE Java SOURCES ${CVC4_SWIG_INTERFACE})
+ endif()
+ swig_link_libraries(cvc4jni cvc4 cvc4parser ${JNI_LIBRARIRES})
++install(TARGETS cvc4jni DESTINATION lib)
+
+ # Create CVC4.jar from all generated *.java files.
+ set(gen_java_files
+@@ -176,6 +177,7 @@ elseif(CVC4_USE_GMP_IMP)
+ endif()
+
+ set(CMAKE_JNI_TARGET TRUE)
++install(FILES ${gen_java_files} DESTINATION src/cvc4/java)
+ add_jar(cvc4jar
+         SOURCES ${gen_java_files}
+         VERSION ${CVC4_MAJOR}.${CVC4_MINOR}.${CVC4_RELEASE}
