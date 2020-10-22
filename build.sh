@@ -88,7 +88,7 @@ install-dependencies() {
 
 install-cvc4() {
   FLAGS=(--abc --cadical --cryptominisat --drat2er --lfsc --symfpu "--language-bindings=java"
-    "--name=build-${2}" "--prefix=${1}")
+    --python3 "--name=build-${2}" "--prefix=${1}")
   GPL_FLAGS=(--gpl --cln --glpk)
 
   pushd src
