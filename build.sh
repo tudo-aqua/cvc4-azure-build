@@ -30,7 +30,7 @@ prepare-macOS-latest() {
 prepare-local() { true; }
 
 prepare-ubuntu-latest() {
-  sudo apt-get install flex libfl-dev python3-toml
+  sudo apt-get install -y flex libfl-dev python3-toml
   if apt-cache show swig4.0; then
     sudo apt-get install -y swig4.0
   else
