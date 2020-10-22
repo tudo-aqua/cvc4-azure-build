@@ -24,12 +24,13 @@ abort-if-missing() {
 prepare-macOS-latest() {
   brew install automake coreutils swig
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+  pip install toml
 }
 
 prepare-local() { true; }
 
 prepare-ubuntu-latest() {
-  sudo apt-get install flex libfl-dev
+  sudo apt-get install flex libfl-dev python3-toml
   if apt-cache show swig4.0; then
     sudo apt-get install -y swig4.0
   else
@@ -77,7 +78,6 @@ prepare-cvc4() {
 }
 
 install-dependencies() {
-  pip install toml
   pushd src
   # GMP is required by CLN
   for dependency in abc antlr-3.4 cadical gmp-dev cln cryptominisat drat2er glpk-cut-log lfsc-checker symfpu; do
