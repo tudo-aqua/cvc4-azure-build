@@ -24,7 +24,7 @@ abort-if-missing() {
 prepare-macOS-latest() {
   brew install automake coreutils swig
   export PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
-  pip install toml
+  pip3 install toml
 }
 
 prepare-local() { true; }
