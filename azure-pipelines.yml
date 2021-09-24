@@ -17,7 +17,8 @@ stages:
   - stage: Build
     displayName: 'Run Build Script on all Platforms'
     jobs:
-      - job: Build
+      - job: language_bindings
+        timeoutInMinutes: 180
         variables:
           CVC4Version: '1.8'
           UbuntuMirror: 'http://azure.archive.ubuntu.com/ubuntu'
@@ -35,6 +36,30 @@ stages:
           - task: Bash@3
             inputs:
               filePath: 'build.sh'
+            env:
+              BUILD_NAME: $(VMImage)
+              CVC4_VERSION: $(CVC4Version)
+              UBUNTU_MIRROR: $(UbuntuMirror)
+              UBUNTU_SWIG_BUILD: $(UbuntuSwigBuild)
+              UBUNTU_SWIG_VERSION: $(UbuntuSwigVersion)
+          - publish: 'build'
+
+      - job: static_binaries
+        variables:
+          CVC4Version: '1.8'
+          UbuntuMirror: 'http://azure.archive.ubuntu.com/ubuntu'
+          UbuntuSwigBuild: '5build1'
+          UbuntuSwigVersion: '4.0.1'
+        strategy:
+          matrix:
+            Linux:
+              VMImage: ubuntu-latest
+        pool:
+          vmImage: $(VMImage)
+        steps:
+          - task: Bash@3
+            inputs:
+              filePath: 'build-static.sh'
             env:
               BUILD_NAME: $(VMImage)
               CVC4_VERSION: $(CVC4Version)
